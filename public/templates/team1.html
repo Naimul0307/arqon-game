@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team 1</title>
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/team-device.css">
+</head>
+
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <main class="team-device-screen">
+    <section class="team-device-card">
+      <h1 class="team-device-title">TEAM 1</h1>
+
+      <div class="team-device-name-card blue">
+        <div class="team-device-avatar">🧒</div>
+        <h2>BLUE TEAM</h2>
+        <input id="teamName" value="Team 1" maxlength="16">
+      </div>
+
+      <div class="team-device-actions">
+        <button id="saveBtn">SAVE</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/team1.js"></script>
+</body>
+</html>

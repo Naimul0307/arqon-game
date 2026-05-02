@@ -1,10 +1,10 @@
+const socket = io();
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  const team1 = document.getElementById("team1Name").value.trim() || "Team 1";
-  const team2 = document.getElementById("team2Name").value.trim() || "Team 2";
+socket.on("teamsUpdated", (teams) => {
+  document.getElementById("team1Display").textContent = teams.team1;
+  document.getElementById("team2Display").textContent = teams.team2;
+});
 
-  localStorage.setItem("team1Name", team1);
-  localStorage.setItem("team2Name", team2);
-
+socket.on("goToGame", () => {
   window.location.href = "/game";
 });
