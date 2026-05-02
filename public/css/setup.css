@@ -1,0 +1,238 @@
+.setup-screen {
+  text-align: center;
+  animation: enter .35s ease both;
+}
+
+h1 {
+  margin: 24px 0 8px;
+  font-size: clamp(34px, 6vw, 66px);
+  font-weight: 1000;
+  letter-spacing: -2px;
+  color: #17366c;
+  text-shadow: 0 4px 0 rgba(255,255,255,.85);
+}
+
+.setup-title {
+  margin: 0 0 24px;
+  color: var(--red);
+  font-size: clamp(24px, 3vw, 38px);
+}
+
+.steps {
+  max-width: 740px;
+  margin: 0 auto 26px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.step {
+  background: rgba(255,255,255,.78);
+  box-shadow: var(--shadow);
+  border-radius: 26px;
+  padding: 17px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  opacity: .55;
+  transform: scale(.96);
+  transition: .25s ease;
+}
+
+.step b {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #dfeefe;
+  font-size: 20px;
+}
+
+.step.active {
+  opacity: 1;
+  transform: scale(1);
+  outline: 4px solid rgba(24,120,255,.18);
+}
+
+.step.active b {
+  background: var(--blue);
+  color: white;
+}
+
+.step span {
+  font-weight: 900;
+}
+
+.setup-card {
+  max-width: 850px;
+  min-height: 310px;
+  margin: 0 auto;
+  padding: 34px;
+  border-radius: 34px;
+  background: rgba(255,255,255,.84);
+  box-shadow: var(--shadow);
+  border: 5px solid rgba(255,255,255,.72);
+  animation: cardIn .25s ease both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: rotateX(8deg) translateY(12px); }
+  to { opacity: 1; transform: rotateX(0) translateY(0); }
+}
+
+.setup-card h3 {
+  margin: 0;
+  font-size: 36px;
+}
+
+.setup-card p {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.operations {
+  margin-top: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.op-card {
+  min-height: 150px;
+  border-radius: 30px;
+  display: grid;
+  place-items: center;
+  background: #f4f8ff;
+  border: 4px solid transparent;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.op-card:hover {
+  transform: translateY(-6px) rotate(-1deg);
+}
+
+.op-card input {
+  display: none;
+}
+
+.op-card span {
+  font-size: 64px;
+  line-height: .8;
+  font-weight: 1000;
+  color: #17366c;
+}
+
+.op-card small {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.op-card.selected {
+  background: #e8f3ff;
+  border-color: var(--blue);
+  box-shadow: 0 16px 25px rgba(24,120,255,.18);
+}
+
+.difficulty {
+  margin-top: 52px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.level {
+  min-width: 150px;
+  color: var(--dark);
+  background: #eaf2ff;
+}
+
+.level.active {
+  color: white;
+  background: linear-gradient(135deg, var(--blue), #48a1ff);
+}
+
+.team-setup {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.team-name-card {
+  min-height: 245px;
+  border-radius: 32px;
+  color: white;
+  padding: 24px;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  box-shadow: inset 0 -10px 0 rgba(0,0,0,.08);
+}
+
+.blue-card {
+  background: linear-gradient(155deg, #53acff, var(--blue-dark));
+}
+
+.red-card {
+  background: linear-gradient(155deg, #ff6b7a, var(--red-dark));
+}
+
+.avatar {
+  font-size: 58px;
+  animation: bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  50% { transform: translateY(-7px); }
+}
+
+.team-name-card h4 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.team-name-card input {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  padding: 15px;
+  text-align: center;
+  font-weight: 1000;
+  font-size: 18px;
+  color: var(--dark);
+}
+
+.versus {
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: white;
+  background: var(--yellow);
+  font-size: 27px;
+  font-weight: 1000;
+  box-shadow: 0 12px 0 #e2a825;
+}
+
+.setup-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+@media (max-width: 980px) {
+  .operations,
+  .team-setup,
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .difficulty {
+    flex-direction: column;
+  }
+}

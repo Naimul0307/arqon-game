@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teams</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/setup.css" />
+</head>
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <main class="app">
+    <section class="setup-screen">
+      <h1>TUG OF WAR: MATH GAME</h1>
+      <h2 class="setup-title">PREPARE THE TEAMS</h2>
+      <section class="setup-card">
+        <h3>Teams</h3>
+
+        <div class="team-setup">
+          <div class="team-name-card blue-card">
+            <div class="avatar">🧒</div>
+            <h4>TEAM 1 (BLUE)</h4>
+            <input id="team1Name" value="Team 1" maxlength="16" />
+          </div>
+
+          <div class="versus">VS</div>
+
+          <div class="team-name-card red-card">
+            <div class="avatar">👦</div>
+            <h4>TEAM 2 (RED)</h4>
+            <input id="team2Name" value="Team 2" maxlength="16" />
+          </div>
+        </div>
+      </section>
+
+      <div class="setup-actions">
+        <button id="startBtn" class="start">START GAME</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/teams.js"></script>
+</body>
+</html>

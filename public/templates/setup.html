@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Game</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/setup.css" />
+</head>
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <main class="app">
+    <section class="setup-screen">
+      <h1>TUG OF WAR: MATH GAME</h1>
+      <h2 class="setup-title">SETUP GAME</h2>
+      <section class="setup-card">
+        <h3>Operations</h3>
+        <p>Select one or more operations</p>
+
+        <div class="operations">
+          <label class="op-card selected">
+            <input type="checkbox" value="+" checked />
+            <span>+</span>
+            <small>Addition</small>
+          </label>
+
+          <label class="op-card">
+            <input type="checkbox" value="-" />
+            <span>−</span>
+            <small>Subtraction</small>
+          </label>
+
+          <label class="op-card">
+            <input type="checkbox" value="*" />
+            <span>×</span>
+            <small>Multiplication</small>
+          </label>
+
+          <label class="op-card">
+            <input type="checkbox" value="/" />
+            <span>÷</span>
+            <small>Division</small>
+          </label>
+        </div>
+
+        <h3 style="margin-top: 35px;">Difficulty</h3>
+        <p>Choose how hard the questions should be</p>
+
+        <div class="difficulty">
+          <button class="level active" data-level="easy">Easy</button>
+          <button class="level" data-level="medium">Medium</button>
+          <button class="level" data-level="hard">Hard</button>
+        </div>
+      </section>
+
+      <div class="setup-actions">
+        <button id="nextBtn" class="start">NEXT</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/setup.js"></script>
+</body>
+</html>

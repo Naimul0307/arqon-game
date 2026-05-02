@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tug of War Game</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/game.css" />
+</head>
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <main class="app">
+    <section id="gameScreen" class="game-screen">
+      <section class="team-panel blue-panel">
+        <h3 id="gameTeam1">Team 1</h3>
+        <div class="round-score" id="team1Correct">0</div>
+        <div class="question-box" id="question1">? + ? = ?</div>
+        <div class="answer-box" id="display1">0</div>
+        <div class="keypad" data-team="1"></div>
+      </section>
+
+      <section class="middle-panel">
+        <div class="scorebar">
+          <div><span id="scoreName1">Team 1</span><b id="score1">0</b></div>
+          <div class="timer" id="timer">00:00</div>
+          <div><span id="scoreName2">Team 2</span><b id="score2">0</b></div>
+        </div>
+
+        <div class="arena">
+          <div class="goal goal-left"></div>
+          <div class="goal goal-right"></div>
+          <div class="ground"></div>
+
+          <div class="player player-left">
+            <div class="head">🧒</div>
+            <div class="body"></div>
+            <div class="legs"></div>
+          </div>
+
+          <div class="player player-right">
+            <div class="head">👦</div>
+            <div class="body"></div>
+            <div class="legs"></div>
+          </div>
+
+          <div class="rope-wrap">
+            <div class="rope"></div>
+            <div id="ropeCenter" class="rope-center"></div>
+          </div>
+
+          <div class="flag">🏁</div>
+        </div>
+
+        <p class="hint">Correct answers pull the rope toward your side.</p>
+      </section>
+
+      <section class="team-panel red-panel">
+        <h3 id="gameTeam2">Team 2</h3>
+        <div class="round-score" id="team2Correct">0</div>
+        <div class="question-box" id="question2">? + ? = ?</div>
+        <div class="answer-box" id="display2">0</div>
+        <div class="keypad" data-team="2"></div>
+      </section>
+    </section>
+
+    <div id="winnerModal" class="modal hidden">
+      <div class="modal-card">
+        <div class="trophy">🏆</div>
+        <h2 id="winnerTitle">Winner!</h2>
+        <p><b id="winnerScore">0</b> correct answers</p>
+        <p><b id="winnerTime">00:00</b> time</p>
+        <button id="playAgainBtn" class="start">PLAY AGAIN</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/game.js"></script>
+</body>
+</html>

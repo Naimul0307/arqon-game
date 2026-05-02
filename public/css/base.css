@@ -1,0 +1,109 @@
+:root {
+  --blue: #1878ff;
+  --blue-dark: #0951c9;
+  --red: #ff3150;
+  --red-dark: #c91832;
+  --yellow: #ffd761;
+  --green: #18c37e;
+  --dark: #14223d;
+  --muted: #718198;
+  --white: #ffffff;
+  --shadow: 0 22px 45px rgba(25, 44, 90, .18);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: var(--dark);
+  background:
+    radial-gradient(circle at 10% 10%, #ffffff 0 0.6rem, transparent .7rem),
+    radial-gradient(circle at 80% 18%, #ffffff 0 0.55rem, transparent .65rem),
+    linear-gradient(180deg, #bce2ff 0%, #eef8ff 46%, #fff3dc 100%);
+  overflow-x: hidden;
+}
+
+.cloud {
+  position: fixed;
+  width: 170px;
+  height: 58px;
+  background: rgba(255,255,255,.72);
+  border-radius: 999px;
+  z-index: -1;
+  animation: cloudMove 18s linear infinite;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.cloud::before {
+  width: 70px;
+  height: 70px;
+  left: 25px;
+  top: -34px;
+}
+
+.cloud::after {
+  width: 92px;
+  height: 92px;
+  right: 18px;
+  top: -48px;
+}
+
+.cloud-1 { top: 100px; left: -200px; }
+.cloud-2 { top: 230px; left: -320px; animation-duration: 24s; animation-delay: -6s; transform: scale(.78); }
+.cloud-3 { top: 55px; left: -260px; animation-duration: 28s; animation-delay: -12s; transform: scale(.62); }
+
+@keyframes cloudMove {
+  to { transform: translateX(calc(100vw + 420px)); }
+}
+
+.app {
+  width: min(1180px, calc(100% - 32px));
+}
+
+@keyframes enter {
+  from { opacity: 0; transform: translateY(18px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  border-radius: 18px;
+  padding: 14px 24px;
+  font-weight: 1000;
+  font-size: 16px;
+  color: white;
+  background: linear-gradient(135deg, #263858, #14223d);
+  box-shadow: 0 12px 22px rgba(20,34,61,.18);
+  transition: transform .15s ease, filter .15s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.03);
+}
+
+.secondary {
+  background: white;
+  color: var(--dark);
+}
+
+.start {
+  background: linear-gradient(135deg, var(--green), #0c9b62);
+}
+
+.hidden {
+  display: none !important;
+}
