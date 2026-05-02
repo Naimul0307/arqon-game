@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Team 2 Game</title>
+  <link rel="shortcut icon" href="../background/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/game-device.css" />
+</head>
+<body>
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+
+  <main class="app">
+    <section class="team-panel red-panel">
+    <h3 id="gameTeam">Team 2</h3>
+    <div class="round-score" id="teamCorrect">0</div>
+    <div class="question-box" id="question">? + ? = ?</div>
+    <div class="answer-box" id="display">0</div>
+    <div class="keypad" id="keypad"></div>
+    </section>
+  </main>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    window.TEAM_NUMBER = 2;
+    </script>
+    <script src="../js/game-device.js"></script>
+</body>
+</html>

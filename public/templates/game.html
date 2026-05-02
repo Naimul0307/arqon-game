@@ -4,8 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tug of War Game</title>
+  <link rel="shortcut icon" href="../background/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/game.css" />
+  <link rel="stylesheet" href="../css/game-main.css" />
 </head>
 <body>
   <div class="cloud cloud-1"></div>
@@ -14,14 +15,6 @@
 
   <main class="app">
     <section id="gameScreen" class="game-screen">
-      <section class="team-panel blue-panel">
-        <h3 id="gameTeam1">Team 1</h3>
-        <div class="round-score" id="team1Correct">0</div>
-        <div class="question-box" id="question1">? + ? = ?</div>
-        <div class="answer-box" id="display1">0</div>
-        <div class="keypad" data-team="1"></div>
-      </section>
-
       <section class="middle-panel">
         <div class="scorebar">
           <div><span id="scoreName1">Team 1</span><b id="score1">0</b></div>
@@ -56,14 +49,6 @@
 
         <p class="hint">Correct answers pull the rope toward your side.</p>
       </section>
-
-      <section class="team-panel red-panel">
-        <h3 id="gameTeam2">Team 2</h3>
-        <div class="round-score" id="team2Correct">0</div>
-        <div class="question-box" id="question2">? + ? = ?</div>
-        <div class="answer-box" id="display2">0</div>
-        <div class="keypad" data-team="2"></div>
-      </section>
     </section>
 
     <div id="winnerModal" class="modal hidden">
@@ -77,6 +62,7 @@
     </div>
   </main>
 
-  <script src="../js/game.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="../js/game-main.js"></script>
 </body>
 </html>
