@@ -8,8 +8,13 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-const PORT = 3000;
+const START_PORT = 3000;
 
+let ioRef = null;
+
+/* =========================
+   GET LOCAL WIFI IP
+========================= */
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
 
@@ -26,38 +31,64 @@ function getLocalIP() {
 
 const localIP = getLocalIP();
 
+/* =========================
+   STATIC FILES
+========================= */
 app.use(express.static(path.join(__dirname, "public")));
 
+/* =========================
+   ROUTES
+========================= */
 app.get("/", (req, res) => res.redirect("/setup"));
 
-app.get("/setup", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "setup.html"));
+app.get("/setup", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "setup.html"))
+);
+
+app.get("/teams", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "teams.html"))
+);
+
+app.get("/team1", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "team1.html"))
+);
+
+app.get("/team2", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "team2.html"))
+);
+
+app.get("/game", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "game.html"))
+);
+
+app.get("/game1", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "game1.html"))
+);
+
+app.get("/game2", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "templates", "game2.html"))
+);
+
+/* =========================
+   ✅ WIFI API (IMPORTANT)
+========================= */
+app.get("/api/server-info", (req, res) => {
+  const port = server.address()?.port || START_PORT;
+
+  res.json({
+    ip: localIP,
+    port,
+    setupUrl: `http://${localIP}:${port}/setup`,
+    teamsUrl: `http://${localIP}:${port}/teams`,
+    team1Url: `http://${localIP}:${port}/team1`,
+    team2Url: `http://${localIP}:${port}/team2`,
+    gameUrl: `http://${localIP}:${port}/game`,
+  });
 });
 
-app.get("/teams", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "teams.html"));
-});
-
-app.get("/team1", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "team1.html"));
-});
-
-app.get("/team2", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "team2.html"));
-});
-
-app.get("/game", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "game.html"));
-});
-
-app.get("/game1", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "game1.html"));
-});
-
-app.get("/game2", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "templates", "game2.html"));
-});
-
+/* =========================
+   GAME STATE
+========================= */
 let teams = {
   team1: "Team 1",
   team2: "Team 2",
@@ -69,89 +100,91 @@ let submitted = {
 };
 
 let gameState = {
-  difficulty: "easy",
-  operations: ["+"],
   scores: { 1: 0, 2: 0 },
   questions: { 1: null, 2: null },
   answers: { 1: "", 2: "" },
   seconds: 0,
   maxScore: 10,
   finished: false,
+  started: false,
 };
 
 let gameTimer = null;
+let countdownTimer = null;
 
-function getMaxNumber() {
-  if (gameState.difficulty === "easy") return 10;
-  if (gameState.difficulty === "medium") return 50;
-  return 100;
-}
-
+/* =========================
+   GAME LOGIC
+========================= */
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function newQuestion(team) {
-  const op = gameState.operations[Math.floor(Math.random() * gameState.operations.length)];
-  const max = getMaxNumber();
-
-  let a = rand(1, max);
-  let b = rand(1, max);
-  let answer = 0;
-  let symbol = op;
-
-  if (op === "+") answer = a + b;
-
-  if (op === "-") {
-    if (a < b) [a, b] = [b, a];
-    answer = a - b;
-  }
-
-  if (op === "*") {
-    const small = gameState.difficulty === "easy" ? 10 : gameState.difficulty === "medium" ? 12 : 20;
-    a = rand(1, small);
-    b = rand(1, small);
-    answer = a * b;
-    symbol = "×";
-  }
-
-  if (op === "/") {
-    const divisorMax = gameState.difficulty === "easy" ? 10 : gameState.difficulty === "medium" ? 12 : 15;
-    b = rand(1, divisorMax);
-    answer = rand(1, divisorMax);
-    a = b * answer;
-    symbol = "÷";
-  }
+  const a = rand(1, 10);
+  const b = rand(1, 10);
 
   gameState.questions[team] = {
-    answer,
-    text: `${a} ${symbol} ${b} = ?`,
+    answer: a + b,
+    text: `${a} + ${b} = ?`,
   };
 
   gameState.answers[team] = "";
 }
 
 function resetGame() {
-  gameState.scores = { 1: 0, 2: 0 };
-  gameState.questions = { 1: null, 2: null };
-  gameState.answers = { 1: "", 2: "" };
-  gameState.seconds = 0;
-  gameState.finished = false;
+  clearInterval(gameTimer);
+  clearInterval(countdownTimer);
+
+  gameState = {
+    scores: { 1: 0, 2: 0 },
+    questions: { 1: null, 2: null },
+    answers: { 1: "", 2: "" },
+    seconds: 0,
+    maxScore: 10,
+    finished: false,
+    started: false,
+  };
 
   newQuestion(1);
   newQuestion(2);
+}
 
-  clearInterval(gameTimer);
+function startCountdown() {
+  let count = 3;
 
-  gameTimer = setInterval(() => {
-    if (!gameState.finished) {
-      gameState.seconds++;
-      io.emit("gameStateUpdated", gameState);
+  io.emit("countdown", count);
+
+  countdownTimer = setInterval(() => {
+    count--;
+
+    if (count > 0) {
+      io.emit("countdown", count);
+      return;
     }
+
+    if (count === 0) {
+      io.emit("countdown", "GO!");
+      return;
+    }
+
+    clearInterval(countdownTimer);
+
+    gameState.started = true;
+    io.emit("gameStarted");
+    io.emit("gameStateUpdated", gameState);
+
+    gameTimer = setInterval(() => {
+      if (!gameState.finished) {
+        gameState.seconds++;
+        io.emit("gameStateUpdated", gameState);
+      }
+    }, 1000);
   }, 1000);
 }
 
 function submitAnswer(team) {
+  if (!gameState.started || gameState.finished) return;
+
   const value = Number(gameState.answers[team]);
   const correct = gameState.questions[team].answer;
 
@@ -182,32 +215,30 @@ function submitAnswer(team) {
 }
 
 function handleKey(team, key) {
-  if (gameState.finished) return;
+  if (!gameState.started || gameState.finished) return;
 
   if (key === "C") {
     gameState.answers[team] = "";
-    io.emit("gameStateUpdated", gameState);
-    return;
-  }
-
-  if (key === "⌫") {
+  } else if (key === "⌫") {
     gameState.answers[team] = gameState.answers[team].slice(0, -1);
-    io.emit("gameStateUpdated", gameState);
-    return;
-  }
-
-  if (key === "OK") {
+  } else if (key === "OK") {
     submitAnswer(team);
     return;
+  } else {
+    if (gameState.answers[team].length < 6) {
+      gameState.answers[team] += key;
+    }
   }
 
-  if (gameState.answers[team].length < 6) {
-    gameState.answers[team] += key;
-    io.emit("gameStateUpdated", gameState);
-  }
+  io.emit("gameStateUpdated", gameState);
 }
 
+/* =========================
+   SOCKET
+========================= */
 io.on("connection", (socket) => {
+  ioRef = io; // 👈 IMPORTANT
+
   socket.emit("teamsUpdated", teams);
   socket.emit("gameStateUpdated", gameState);
 
@@ -220,7 +251,10 @@ io.on("connection", (socket) => {
     if (submitted.team1 && submitted.team2) {
       resetGame();
       io.emit("goToGame");
-      io.emit("gameStateUpdated", gameState);
+
+      setTimeout(() => {
+        startCountdown();
+      }, 800);
     }
   });
 
@@ -229,23 +263,41 @@ io.on("connection", (socket) => {
   });
 
   socket.on("playAgain", () => {
-    submitted = {
-      team1: false,
-      team2: false,
-    };
-
+    submitted = { team1: false, team2: false };
     resetGame();
     io.emit("restartSetup");
   });
 });
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Running at http://${localIP}:${PORT}`);
-  console.log(`⚙️ Setup page: http://${localIP}:${PORT}/setup`);
-  console.log(`📺 Main teams screen: http://${localIP}:${PORT}/teams`);
-  console.log(`🔵 Team 1 device: http://${localIP}:${PORT}/team1`);
-  console.log(`🔴 Team 2 device: http://${localIP}:${PORT}/team2`);
-  console.log(`🎮 Main game screen: http://${localIP}:${PORT}/game`);
-  console.log(`🔵 Team 1 game: http://${localIP}:${PORT}/game1`);
-  console.log(`🔴 Team 2 game: http://${localIP}:${PORT}/game2`);
-});
+/* =========================
+   START SERVER
+========================= */
+function startServer(port) {
+  server
+    .listen(port, "0.0.0.0")
+    .on("listening", () => {
+      console.log(`✅ Running at http://${localIP}:${port}`);
+      console.log(`📺 Main: http://${localIP}:${port}/teams`);
+      console.log(`🔵 Team1: http://${localIP}:${port}/team1`);
+      console.log(`🔴 Team2: http://${localIP}:${port}/team2`);
+      console.log(`🎮 Game: http://${localIP}:${port}/game`);
+    })
+    .on("error", (err) => {
+      if (err.code === "EADDRINUSE") {
+        console.log(`⚠️ Port ${port} busy, trying ${port + 1}...`);
+        startServer(port + 1);
+      } else {
+        console.error(err);
+      }
+    });
+}
+
+startServer(START_PORT);
+
+module.exports = {
+  sendReloadToClients: () => {
+    if (ioRef) {
+      ioRef.emit("reload-client");
+    }
+  },
+};
