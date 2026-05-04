@@ -11,6 +11,15 @@ function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
 }
 
+function showCountdown(value) {
+  $("#countdownOverlay").classList.remove("hidden");
+  $("#countdownText").textContent = value;
+}
+
+function hideCountdown() {
+  $("#countdownOverlay").classList.add("hidden");
+}
+
 socket.on("teamsUpdated", (teams) => {
   $("#scoreName1").textContent = teams.team1;
   $("#scoreName2").textContent = teams.team2;
@@ -26,6 +35,14 @@ socket.on("gameStateUpdated", (state) => {
   $("#ropeCenter").style.left = `${clamp(50 - diff * 5.8, 16, 84)}%`;
   $(".player-left").style.left = `${clamp(12 - diff * 1.8, 4, 24)}%`;
   $(".player-right").style.right = `${clamp(12 + diff * 1.8, 4, 24)}%`;
+});
+
+socket.on("countdown", (value) => {
+  showCountdown(value);
+});
+
+socket.on("gameStarted", () => {
+  setTimeout(hideCountdown, 450);
 });
 
 socket.on("pullRope", (team) => {

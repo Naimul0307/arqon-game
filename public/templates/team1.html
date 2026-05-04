@@ -32,5 +32,14 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="../js/team1.js"></script>
+  <script>
+    if (window.io) {
+      const socket = io();
+
+      socket.on("reload-client", () => {
+        location.reload();
+      });
+    }
+  </script>
 </body>
 </html>

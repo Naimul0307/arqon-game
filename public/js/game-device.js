@@ -5,6 +5,27 @@ const keys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "C", "OK"
 
 const $ = (selector) => document.querySelector(selector);
 
+let canAnswer = false;
+
+function setKeypadEnabled(enabled) {
+  canAnswer = enabled;
+
+  document.querySelectorAll("#keypad button").forEach((button) => {
+    button.disabled = !enabled;
+  });
+
+  $("#keypad").classList.toggle("locked", !enabled);
+}
+
+function showCountdown(value) {
+  $("#countdownOverlay").classList.remove("hidden");
+  $("#countdownText").textContent = value;
+}
+
+function hideCountdown() {
+  $("#countdownOverlay").classList.add("hidden");
+}
+
 function flashAnswer(type) {
   const answerBox = document.querySelector(".answer-box");
 
@@ -27,6 +48,8 @@ function createKeypad() {
     if (key === "C") button.classList.add("clear");
 
     button.addEventListener("click", () => {
+      if (!canAnswer) return;
+
       socket.emit("teamKey", {
         team,
         key,
@@ -35,6 +58,8 @@ function createKeypad() {
 
     $("#keypad").appendChild(button);
   });
+
+  setKeypadEnabled(false);
 }
 
 socket.on("teamsUpdated", (teams) => {
@@ -43,8 +68,24 @@ socket.on("teamsUpdated", (teams) => {
 
 socket.on("gameStateUpdated", (state) => {
   $("#teamCorrect").textContent = state.scores[team];
-  $("#question").textContent = state.questions[team].text;
+  $("#question").textContent = state.questions?.[team]?.text || "? + ? = ?";
   $("#display").textContent = state.answers[team] || "0";
+
+  if (!state.started || state.finished) {
+    setKeypadEnabled(false);
+  }
+});
+
+socket.on("countdown", (value) => {
+  setKeypadEnabled(false);
+  showCountdown(value);
+});
+
+socket.on("gameStarted", () => {
+  setTimeout(() => {
+    hideCountdown();
+    setKeypadEnabled(true);
+  }, 450);
 });
 
 socket.on("correctAnswer", (correctTeam) => {
@@ -58,9 +99,7 @@ socket.on("wrongAnswer", (wrongTeam) => {
 });
 
 socket.on("gameFinished", () => {
-  document.querySelectorAll("button").forEach((button) => {
-    button.disabled = true;
-  });
+  setKeypadEnabled(false);
 
   setTimeout(() => {
     window.location.href = team === 1 ? "/team1" : "/team2";

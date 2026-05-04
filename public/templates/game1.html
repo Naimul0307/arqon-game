@@ -21,6 +21,9 @@
     <div class="answer-box" id="display">0</div>
     <div class="keypad" id="keypad"></div>
     </section>
+    <div id="countdownOverlay" class="countdown-overlay">
+     <div id="countdownText" class="countdown-text">WAIT</div>
+    </div>
   </main>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -28,5 +31,14 @@
     window.TEAM_NUMBER = 1;
     </script>
     <script src="../js/game-device.js"></script>
+  <script>
+    if (window.io) {
+      const socket = io();
+
+      socket.on("reload-client", () => {
+        location.reload();
+      });
+    }
+  </script>
 </body>
 </html>

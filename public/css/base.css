@@ -1,30 +1,189 @@
-:root {
-  --blue: #1878ff;
-  --blue-dark: #0951c9;
-  --red: #ff3150;
-  --red-dark: #c91832;
-  --yellow: #ffd761;
-  --green: #18c37e;
-  --dark: #14223d;
-  --muted: #718198;
-  --white: #ffffff;
-  --shadow: 0 22px 45px rgba(25, 44, 90, .18);
+/* FONT_FACE_START */
+@font-face {
+  font-family: 'ArefRuqaa Regular';
+  src: url('../font/ArefRuqaa-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-* { box-sizing: border-box; }
+@font-face {
+  font-family: 'LibertinusSans Regular';
+  src: url('../font/LibertinusSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MirandaSans Italic VariableFont wght';
+  src: url('../font/MirandaSans-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MirandaSans VariableFont wght';
+  src: url('../font/MirandaSans-VariableFont_wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PlaywriteDKUloopetGuides Regular';
+  src: url('../font/PlaywriteDKUloopetGuides-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Italic VariableFont wdth,wght';
+  src: url('../font/Roboto-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto VariableFont wdth,wght';
+  src: url('../font/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SairaStencil Italic VariableFont wdth,wght';
+  src: url('../font/SairaStencil-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SairaStencil VariableFont wdth,wght';
+  src: url('../font/SairaStencil-VariableFont_wdth,wght.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* FONT_FACE_END */
+:root {
+  --blue: #1677E3;
+  --blue-light: #5bb1ff;
+  --blue-dark: #0951c9;
+
+  --red: #ff3150;
+  --red-light: #ff7887;
+  --red-dark: #c91832;
+
+  --green: #18c37e;
+  --green-dark: #0c9b62;
+  --green-strong: #0a9d62;
+
+  --yellow: #ffd761;
+
+  --dark: #14223d;
+  --navy-light: #263858;
+  --muted: #718198;
+  --white: #ffffff;
+  --title-color: #17366c;
+
+  --sky-top: #bce2ff;
+  --sky-mid: #eef8ff;
+  --sky-bottom: #fff3dc;
+
+  --arena-sky: #d8f0ff;
+  --arena-grass: #8ad477;
+
+  --panel-bg: rgba(255, 255, 255, .86);
+  --card-bg: rgba(255, 255, 255, .84);
+  --score-bg: #f5f9ff;
+  --op-bg: #f4f8ff;
+  --op-selected-bg: #e8f3ff;
+  --level-bg: #eaf2ff;
+
+  --cloud: rgba(255, 255, 255, .72);
+  --panel-border: rgba(255, 255, 255, .45);
+  --panel-border-light: rgba(255, 255, 255, .65);
+  --panel-glass: rgba(255, 255, 255, .22);
+  --panel-glass-strong: rgba(255, 255, 255, .3);
+  --card-border: rgba(255, 255, 255, .72);
+  --step-bg: rgba(255, 255, 255, .78);
+  --step-number-bg: #dfeefe;
+
+  --ground-top: #8dd76f;
+  --ground-bottom: #5eb84e;
+
+  --goal-color: rgba(20, 34, 61, .35);
+
+  --rope-dark: #8a4e22;
+  --rope-light: #c9823f;
+  --rope-center-top: #ffef8a;
+  --rope-center-bottom: #efad22;
+
+  --blue-player: #244c9d;
+  --red-player: #b81731;
+  --legs-color: #29324c;
+
+  --blue-card-light: #53acff;
+  --red-card-light: #ff6b7a;
+  --button-blue-light: #48A1FF;
+  --level-active-light: #48a1ff;
+
+  --shadow: 0 22px 45px rgba(25, 44, 90, .18);
+  --button-shadow: 0 12px 22px rgba(20, 34, 61, .18);
+  --key-shadow: rgba(0, 0, 0, .15);
+  --button-shadow-soft: rgba(0, 0, 0, .12);
+  --modal-shadow: rgba(0, 0, 0, .28);
+  --countdown-shadow: rgba(0, 0, 0, .35);
+  --team-shadow: rgba(0, 0, 0, .08);
+  --vs-shadow: #e2a825;
+
+  --title-shadow: rgba(255, 255, 255, .85);
+  --step-active-outline: rgba(24, 120, 255, .18);
+  --op-shadow: rgba(24, 120, 255, .18);
+
+  --correct-glow: rgba(24, 195, 126, .65);
+  --wrong-glow: rgba(255, 49, 80, .65);
+
+  --overlay-bg: rgba(9, 20, 43, .72);
+  --modal-bg: rgba(9, 20, 43, .66);
+
+  --key-bg: rgba(255, 255, 255, .95);
+
+  --font-main: 'PlaywriteDKUloopetGuides Regular';
+  --font-style-main: italic;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-main);
+  font-style: var(--font-style-main);
+}
 
 body {
-  margin: 0;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Segoe UI", Arial, sans-serif;
   color: var(--dark);
   background:
-    radial-gradient(circle at 10% 10%, #ffffff 0 0.6rem, transparent .7rem),
-    radial-gradient(circle at 80% 18%, #ffffff 0 0.55rem, transparent .65rem),
-    linear-gradient(180deg, #bce2ff 0%, #eef8ff 46%, #fff3dc 100%);
+    radial-gradient(circle at 10% 10%, var(--white) 0 0.6rem, transparent .7rem),
+    radial-gradient(circle at 80% 18%, var(--white) 0 0.55rem, transparent .65rem),
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 46%, var(--sky-bottom) 100%);
   overflow-x: hidden;
 }
 
@@ -32,7 +191,7 @@ body {
   position: fixed;
   width: 170px;
   height: 58px;
-  background: rgba(255,255,255,.72);
+  background: var(--cloud);
   border-radius: 999px;
   z-index: -1;
   animation: cloudMove 18s linear infinite;
@@ -60,12 +219,31 @@ body {
   top: -48px;
 }
 
-.cloud-1 { top: 100px; left: -200px; }
-.cloud-2 { top: 230px; left: -320px; animation-duration: 24s; animation-delay: -6s; transform: scale(.78); }
-.cloud-3 { top: 55px; left: -260px; animation-duration: 28s; animation-delay: -12s; transform: scale(.62); }
+.cloud-1 {
+  top: 100px;
+  left: -200px;
+}
+
+.cloud-2 {
+  top: 230px;
+  left: -320px;
+  animation-duration: 24s;
+  animation-delay: -6s;
+  transform: scale(.78);
+}
+
+.cloud-3 {
+  top: 55px;
+  left: -260px;
+  animation-duration: 28s;
+  animation-delay: -12s;
+  transform: scale(.62);
+}
 
 @keyframes cloudMove {
-  to { transform: translateX(calc(100vw + 420px)); }
+  to {
+    transform: translateX(calc(100vw + 420px));
+  }
 }
 
 .app {
@@ -73,8 +251,15 @@ body {
 }
 
 @keyframes enter {
-  from { opacity: 0; transform: translateY(18px) scale(.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 button {
@@ -84,9 +269,9 @@ button {
   padding: 14px 24px;
   font-weight: 1000;
   font-size: 16px;
-  color: white;
-  background: linear-gradient(135deg, #263858, #14223d);
-  box-shadow: 0 12px 22px rgba(20,34,61,.18);
+  color: var(--white);
+  background: linear-gradient(135deg, var(--navy-light), var(--dark));
+  box-shadow: var(--button-shadow);
   transition: transform .15s ease, filter .15s ease;
 }
 
@@ -96,14 +281,156 @@ button:hover {
 }
 
 .secondary {
-  background: white;
+  background: var(--white);
   color: var(--dark);
 }
 
 .start {
-  background: linear-gradient(135deg, var(--green), #0c9b62);
+  background: linear-gradient(135deg, var(--green), var(--green-dark));
 }
 
 .hidden {
   display: none !important;
+}
+
+.settings-card {
+  margin-top: 28px;
+}
+
+.settings-row {
+  margin: 18px 0;
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  font-weight: 900;
+}
+
+.settings-row select {
+  padding: 14px;
+  border-radius: 16px;
+  border: 0;
+  font-weight: 900;
+  color: var(--dark);
+  background: var(--op-bg);
+}
+
+.settings-grid {
+  margin: 22px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.color-picker-container {
+  background: var(--op-bg);
+  padding: 14px;
+  border-radius: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 900;
+}
+
+#wifiIpText {
+  margin-top: 12px;
+  color: var(--title-color);
+  font-weight: 1000;
+}
+
+@media (max-width: 980px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.font-grid {
+  margin: 18px 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.font-item {
+  background: var(--op-bg);
+  border-radius: 16px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.font-preview {
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.delete-font-btn {
+  background: var(--red);
+  color: var(--white);
+  padding: 10px 14px;
+  border-radius: 14px;
+}
+
+@media (max-width: 980px) {
+  .font-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(9, 20, 43, 0.7);
+  display: grid;
+  place-items: center;
+  z-index: 999;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-card {
+  width: min(420px, 90%);
+  padding: 30px;
+  border-radius: 28px;
+  background: var(--card-bg);
+  text-align: center;
+  box-shadow: 0 25px 70px rgba(0,0,0,.3);
+  animation: popupIn .3s ease;
+}
+
+.popup-icon {
+  font-size: 60px;
+  margin-bottom: 10px;
+}
+
+.popup-card h3 {
+  margin: 10px 0;
+  font-size: 28px;
+  color: var(--title-color);
+}
+
+.popup-card p {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.popup-card button {
+  margin-top: 18px;
+  padding: 12px 28px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--green), var(--green-strong));
+  color: white;
+  font-weight: 900;
+}
+
+@keyframes popupIn {
+  from {
+    transform: scale(.7);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

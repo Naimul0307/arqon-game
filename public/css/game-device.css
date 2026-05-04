@@ -4,21 +4,31 @@
   margin: 0 auto;
   border-radius: 36px;
   padding: 24px;
-  color: white;
+  color: var(--white);
   text-align: center;
   display: flex;
   flex-direction: column;
-  border: 6px solid rgba(255,255,255,.45);
+  border: 6px solid var(--panel-border);
   box-shadow: var(--shadow);
   animation: enter .35s ease both;
 }
 
 .blue-panel {
-  background: linear-gradient(160deg, #5bb1ff 0%, var(--blue) 48%, var(--blue-dark) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--blue-light) 0%,
+    var(--blue) 48%,
+    var(--blue-dark) 100%
+  );
 }
 
 .red-panel {
-  background: linear-gradient(160deg, #ff7887 0%, var(--red) 48%, var(--red-dark) 100%);
+  background: linear-gradient(
+    160deg,
+    var(--red-light) 0%,
+    var(--red) 48%,
+    var(--red-dark) 100%
+  );
 }
 
 .team-panel h3 {
@@ -34,8 +44,8 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: rgba(255,255,255,.22);
-  border: 6px solid rgba(255,255,255,.3);
+  background: var(--panel-glass);
+  border: 6px solid var(--panel-glass-strong);
   font-size: 58px;
   font-weight: 1000;
 }
@@ -48,19 +58,21 @@
   padding: 14px;
   font-size: clamp(34px, 8vw, 58px);
   font-weight: 1000;
-  background: rgba(255,255,255,.22);
+  background: var(--panel-glass);
 }
 
 .answer-box {
   min-height: 78px;
   margin: 16px 0 18px;
   border-radius: 22px;
-  background: white;
+  background: var(--white);
   color: var(--dark);
   display: grid;
   place-items: center;
   font-weight: 1000;
   font-size: clamp(34px, 8vw, 56px);
+  border: 5px solid transparent;
+  transition: border .2s ease, box-shadow .2s ease;
 }
 
 .keypad {
@@ -74,51 +86,98 @@
   min-height: 72px;
   border: 0;
   border-radius: 20px;
-  background: rgba(255,255,255,.95);
+  background: var(--key-bg);
   color: var(--dark);
   font-size: 30px;
   font-weight: 1000;
   cursor: pointer;
-  box-shadow: 0 7px 0 rgba(0,0,0,.15);
+  box-shadow: 0 7px 0 var(--key-shadow);
 }
 
 .keypad button:active {
   transform: translateY(4px);
-  box-shadow: 0 3px 0 rgba(0,0,0,.15);
+  box-shadow: 0 3px 0 var(--key-shadow);
 }
 
 .keypad .ok {
-  background: linear-gradient(135deg, var(--green), #0a9d62);
-  color: white;
+  background: linear-gradient(135deg, var(--green), var(--green-strong));
+  color: var(--white);
   grid-column: span 3;
 }
 
 .keypad .clear {
-  background: #14223d;
-  color: white;
+  background: var(--dark);
+  color: var(--white);
 }
 
 .wrong {
   animation: shake .28s ease;
 }
 
-.answer-box {
-  border: 5px solid transparent;
-  transition: border .2s ease, box-shadow .2s ease;
-}
-
 .answer-box.correct {
-  border: 5px solid #18c37e !important;
-  box-shadow: 0 0 14px rgba(24,195,126,.65);
+  border: 5px solid var(--green) !important;
+  box-shadow: 0 0 14px var(--correct-glow);
 }
 
 .answer-box.wrong {
-  border: 5px solid #ff3150 !important;
-  box-shadow: 0 0 14px rgba(255,49,80,.65);
+  border: 5px solid var(--red) !important;
+  box-shadow: 0 0 14px var(--wrong-glow);
 }
 
 @keyframes shake {
-  0%,100% { transform: translateX(0); }
-  25% { transform: translateX(-9px); }
-  75% { transform: translateX(9px); }
+  0%, 100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-9px);
+  }
+
+  75% {
+    transform: translateX(9px);
+  }
+}
+
+.countdown-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--overlay-bg);
+  z-index: 99;
+}
+
+.countdown-overlay.hidden {
+  display: none;
+}
+
+.countdown-text {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  color: var(--title-color);
+  font-size: 68px;
+  font-weight: 1000;
+  box-shadow: 0 20px 60px var(--countdown-shadow);
+  animation: countdownPop .45s ease both;
+}
+
+@keyframes countdownPop {
+  from {
+    transform: scale(.65);
+    opacity: .4;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.keypad.locked {
+  pointer-events: none;
+  opacity: .45;
 }

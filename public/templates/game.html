@@ -60,9 +60,21 @@
         <button id="playAgainBtn" class="start">PLAY AGAIN</button>
       </div>
     </div>
+    <div id="countdownOverlay" class="countdown-overlay hidden">
+      <div id="countdownText" class="countdown-text">3</div>
+    </div>
   </main>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="../js/game-main.js"></script>
+  <script>
+    if (window.io) {
+      const socket = io();
+
+      socket.on("reload-client", () => {
+        location.reload();
+      });
+    }
+  </script>
 </body>
 </html>
