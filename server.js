@@ -12,9 +12,10 @@ const START_PORT = 3000;
 
 let ioRef = null;
 
-/* =========================
-   GET LOCAL WIFI IP
-========================= */
+function getPublicDir() {
+  return process.env.PUBLIC_DIR || path.join(__dirname, "public");
+}
+
 function getLocalIP() {
   const interfaces = os.networkInterfaces();
 
@@ -26,52 +27,45 @@ function getLocalIP() {
     }
   }
 
-  return "localhost";
+  return "127.0.0.1";
 }
 
 const localIP = getLocalIP();
 
-/* =========================
-   STATIC FILES
-========================= */
-app.use(express.static(path.join(__dirname, "public")));
+app.use((req, res, next) => {
+  express.static(getPublicDir())(req, res, next);
+});
 
-/* =========================
-   ROUTES
-========================= */
-app.get("/", (req, res) => res.redirect("/setup"));
+app.get("/", (req, res) => res.redirect("/teams"));
 
 app.get("/setup", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "setup.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "setup.html"))
 );
 
 app.get("/teams", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "teams.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "teams.html"))
 );
 
 app.get("/team1", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "team1.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "team1.html"))
 );
 
 app.get("/team2", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "team2.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "team2.html"))
 );
 
 app.get("/game", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "game.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "game.html"))
 );
 
 app.get("/game1", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "game1.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "game1.html"))
 );
 
 app.get("/game2", (req, res) =>
-  res.sendFile(path.join(__dirname, "public", "templates", "game2.html"))
+  res.sendFile(path.join(getPublicDir(), "templates", "game2.html"))
 );
 
-/* =========================
-   ✅ WIFI API (IMPORTANT)
-========================= */
 app.get("/api/server-info", (req, res) => {
   const port = server.address()?.port || START_PORT;
 
@@ -86,9 +80,6 @@ app.get("/api/server-info", (req, res) => {
   });
 });
 
-/* =========================
-   GAME STATE
-========================= */
 let teams = {
   team1: "Team 1",
   team2: "Team 2",
@@ -112,9 +103,6 @@ let gameState = {
 let gameTimer = null;
 let countdownTimer = null;
 
-/* =========================
-   GAME LOGIC
-========================= */
 function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -233,11 +221,8 @@ function handleKey(team, key) {
   io.emit("gameStateUpdated", gameState);
 }
 
-/* =========================
-   SOCKET
-========================= */
 io.on("connection", (socket) => {
-  ioRef = io; // 👈 IMPORTANT
+  ioRef = io;
 
   socket.emit("teamsUpdated", teams);
   socket.emit("gameStateUpdated", gameState);
@@ -269,32 +254,40 @@ io.on("connection", (socket) => {
   });
 });
 
-/* =========================
-   START SERVER
-========================= */
-function startServer(port) {
-  server
-    .listen(port, "0.0.0.0")
-    .on("listening", () => {
-      console.log(`✅ Running at http://${localIP}:${port}`);
-      console.log(`📺 Main: http://${localIP}:${port}/teams`);
-      console.log(`🔵 Team1: http://${localIP}:${port}/team1`);
-      console.log(`🔴 Team2: http://${localIP}:${port}/team2`);
-      console.log(`🎮 Game: http://${localIP}:${port}/game`);
-    })
-    .on("error", (err) => {
-      if (err.code === "EADDRINUSE") {
-        console.log(`⚠️ Port ${port} busy, trying ${port + 1}...`);
-        startServer(port + 1);
-      } else {
-        console.error(err);
-      }
-    });
+function start() {
+  return new Promise((resolve, reject) => {
+    function tryPort(port) {
+      server
+        .listen(port, "0.0.0.0")
+        .once("listening", () => {
+          console.log(`✅ Running at http://${localIP}:${port}`);
+          console.log(`📺 Main: http://${localIP}:${port}/teams`);
+          console.log(`🔵 Team1: http://${localIP}:${port}/team1`);
+          console.log(`🔴 Team2: http://${localIP}:${port}/team2`);
+          console.log(`🎮 Game: http://${localIP}:${port}/game`);
+
+          resolve({
+            port,
+            url: `http://127.0.0.1:${port}`,
+            localIP,
+          });
+        })
+        .once("error", (err) => {
+          if (err.code === "EADDRINUSE") {
+            console.log(`⚠️ Port ${port} busy, trying ${port + 1}...`);
+            tryPort(port + 1);
+          } else {
+            reject(err);
+          }
+        });
+    }
+
+    tryPort(START_PORT);
+  });
 }
 
-startServer(START_PORT);
-
 module.exports = {
+  start,
   sendReloadToClients: () => {
     if (ioRef) {
       ioRef.emit("reload-client");

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut, shell } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
@@ -7,9 +7,13 @@ const serverControl = require("./server");
 app.setAppUserModelId("com.arqon.game");
 
 let mainWindow;
+let appServerUrl = "";
 
-const cssPath = path.join(__dirname, "public", "css", "base.css");
-const fontDir = path.join(__dirname, "public", "font");
+const bundledPublicDir = path.join(__dirname, "public");
+const editablePublicDir = path.join(app.getPath("userData"), "public");
+
+const cssPath = path.join(editablePublicDir, "css", "base.css");
+const fontDir = path.join(editablePublicDir, "font");
 
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
@@ -17,7 +21,15 @@ function ensureDir(dirPath) {
   }
 }
 
+function copyPublicIfMissing() {
+  if (!fs.existsSync(editablePublicDir)) {
+    fs.cpSync(bundledPublicDir, editablePublicDir, { recursive: true });
+  }
+}
+
 function readCssVariables() {
+  if (!fs.existsSync(cssPath)) return {};
+
   const css = fs.readFileSync(cssPath, "utf8");
   const rootMatch = css.match(/:root\s*{([\s\S]*?)}/);
 
@@ -35,6 +47,8 @@ function readCssVariables() {
 }
 
 function updateCssVariables(updatedVars) {
+  if (!fs.existsSync(cssPath)) return false;
+
   let css = fs.readFileSync(cssPath, "utf8");
 
   for (const [name, value] of Object.entries(updatedVars)) {
@@ -104,6 +118,8 @@ function buildFontFaceCss() {
 }
 
 function syncFontFacesToBaseCss() {
+  if (!fs.existsSync(cssPath)) return;
+
   let css = fs.readFileSync(cssPath, "utf8");
 
   const startMarker = "/* FONT_FACE_START */";
@@ -139,13 +155,20 @@ function reloadAllStyles() {
   });
 }
 
-function createWindow() {
+function goToSetupPage() {
+  if (mainWindow && !mainWindow.isDestroyed() && appServerUrl) {
+    mainWindow.loadURL(`${appServerUrl}/setup`);
+    mainWindow.focus();
+  }
+}
+
+function createWindow(serverUrl) {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     autoHideMenuBar: true,
     backgroundColor: "#d8f0ff",
-    icon: path.join(__dirname, "public", "background", "favicon.ico"),
+    icon: path.join(editablePublicDir, "background", "favicon.ico"),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -153,31 +176,39 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL("http://localhost:3000/setup");
+  mainWindow.loadURL(`${serverUrl}/teams`);
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  copyPublicIfMissing();
+
+  process.env.PUBLIC_DIR = editablePublicDir;
+
   ensureDir(fontDir);
   syncFontFacesToBaseCss();
 
-  setTimeout(createWindow, 800);
+  const serverInfo = await serverControl.start();
+  appServerUrl = serverInfo.url;
+
+  createWindow(appServerUrl);
+
+  globalShortcut.register("F2", () => {
+    goToSetupPage();
+  });
 
   ipcMain.handle("get-css-variables", () => ({
     success: true,
     variables: readCssVariables(),
   }));
 
-ipcMain.handle("update-css-variables", (event, variables) => {
-  const ok = updateCssVariables(variables || {});
+  ipcMain.handle("update-css-variables", (event, variables) => {
+    const ok = updateCssVariables(variables || {});
 
-  // Electron windows
-  reloadAllStyles();
+    reloadAllStyles();
+    serverControl.sendReloadToClients();
 
-  // 🔥 ALL DEVICES (phones, browsers)
-  serverControl.sendReloadToClients();
-
-  return { success: ok };
-});
+    return { success: ok };
+  });
 
   ipcMain.handle("get-fonts", () => ({
     success: true,
@@ -202,6 +233,8 @@ ipcMain.handle("update-css-variables", (event, variables) => {
         };
       }
 
+      ensureDir(fontDir);
+
       const safeName = path.basename(file.name);
       const destPath = path.join(fontDir, safeName);
 
@@ -209,6 +242,7 @@ ipcMain.handle("update-css-variables", (event, variables) => {
 
       syncFontFacesToBaseCss();
       reloadAllStyles();
+      serverControl.sendReloadToClients();
 
       return {
         success: true,
@@ -233,6 +267,7 @@ ipcMain.handle("update-css-variables", (event, variables) => {
 
       syncFontFacesToBaseCss();
       reloadAllStyles();
+      serverControl.sendReloadToClients();
 
       return {
         success: true,
@@ -245,16 +280,32 @@ ipcMain.handle("update-css-variables", (event, variables) => {
       };
     }
   });
+
+  ipcMain.handle("open-public-folder", () => {
+    shell.openPath(editablePublicDir);
+
+    return {
+      success: true,
+      path: editablePublicDir,
+    };
+  });
+
+  ipcMain.handle("get-public-folder-path", () => ({
+    success: true,
+    path: editablePublicDir,
+  }));
 });
 
 app.on("window-all-closed", () => {
+  globalShortcut.unregisterAll();
+
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+  if (BrowserWindow.getAllWindows().length === 0 && appServerUrl) {
+    createWindow(appServerUrl);
   }
 });

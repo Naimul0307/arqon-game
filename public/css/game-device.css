@@ -1,6 +1,6 @@
 .team-panel {
   width: min(520px, 94vw);
-  min-height: 92vh;
+  min-height: 78vh;
   margin: 0 auto;
   border-radius: 36px;
   padding: 24px;
@@ -152,14 +152,14 @@
 }
 
 .countdown-text {
-  width: 180px;
+  width: 190px;
   height: 180px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: var(--white);
   color: var(--title-color);
-  font-size: 68px;
+  font-size: 30px;
   font-weight: 1000;
   box-shadow: 0 20px 60px var(--countdown-shadow);
   animation: countdownPop .45s ease both;

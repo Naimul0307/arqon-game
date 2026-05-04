@@ -1,18 +1,49 @@
 {
   "name": "arqon-game",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Tug of War Math Game",
+  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "electron .",
+    "server": "node server.js",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win"
   },
   "keywords": [],
-  "author": "",
+  "author": "Arqon",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
     "express": "^5.2.1",
     "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "electron": "^41.5.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.arqon.game",
+    "productName": "Arqon Game",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "server.js",
+      "preload.js",
+      "package.json",
+      "public/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/background/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Arqon Game"
+    }
   }
 }
