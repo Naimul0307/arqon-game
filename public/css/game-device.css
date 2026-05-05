@@ -1,16 +1,18 @@
 .team-panel {
   width: min(520px, 94vw);
-  min-height: 78vh;
+  min-height: 94vh;
+  height: auto;
   margin: 0 auto;
-  border-radius: 36px;
-  padding: 24px;
+  border-radius: clamp(22px, 5vw, 36px);
+  padding: clamp(12px, 2.5vw, 22px);
   color: var(--white);
   text-align: center;
   display: flex;
   flex-direction: column;
-  border: 6px solid var(--panel-border);
+  border: clamp(3px, 1vw, 6px) solid var(--panel-border);
   box-shadow: var(--shadow);
   animation: enter .35s ease both;
+  overflow: visible;
 }
 
 .blue-panel {
@@ -32,46 +34,50 @@
 }
 
 .team-panel h3 {
-  margin: 4px 0 16px;
-  font-size: clamp(34px, 8vw, 54px);
+  margin: 2px 0 10px;
+  font-size: clamp(26px, 6vw, 48px);
   font-weight: 1000;
+  line-height: 1.1;
 }
 
 .round-score {
-  width: 118px;
-  height: 118px;
-  margin: 0 auto 20px;
+  width: clamp(74px, 18vw, 110px);
+  height: clamp(74px, 18vw, 110px);
+  margin: 0 auto 12px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background: var(--panel-glass);
-  border: 6px solid var(--panel-glass-strong);
-  font-size: 58px;
+  border: clamp(3px, 1vw, 6px) solid var(--panel-glass-strong);
+  font-size: clamp(34px, 9vw, 54px);
   font-weight: 1000;
+  line-height: 1;
 }
 
 .question-box {
-  min-height: 95px;
-  border-radius: 28px;
+  min-height: clamp(62px, 13vh, 90px);
+  border-radius: clamp(18px, 4vw, 28px);
   display: grid;
   place-items: center;
-  padding: 14px;
-  font-size: clamp(34px, 8vw, 58px);
+  padding: clamp(8px, 2vw, 14px);
+  font-size: clamp(28px, 7vw, 52px);
   font-weight: 1000;
+  line-height: 1.1;
   background: var(--panel-glass);
 }
 
 .answer-box {
-  min-height: 78px;
-  margin: 16px 0 18px;
-  border-radius: 22px;
+  min-height: clamp(54px, 11vh, 74px);
+  margin: 10px 0 12px;
+  border-radius: clamp(16px, 4vw, 22px);
   background: var(--white);
   color: var(--dark);
   display: grid;
   place-items: center;
   font-weight: 1000;
-  font-size: clamp(34px, 8vw, 56px);
-  border: 5px solid transparent;
+  font-size: clamp(28px, 7vw, 50px);
+  line-height: 1;
+  border: 4px solid transparent;
   transition: border .2s ease, box-shadow .2s ease;
 }
 
@@ -79,19 +85,20 @@
   margin-top: auto;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: clamp(8px, 2vw, 12px);
 }
 
 .keypad button {
-  min-height: 72px;
+  min-height: clamp(44px, 8vh, 64px);
   border: 0;
-  border-radius: 20px;
+  border-radius: clamp(14px, 4vw, 20px);
   background: var(--key-bg);
   color: var(--dark);
-  font-size: 30px;
+  font-size: clamp(20px, 6vw, 30px);
   font-weight: 1000;
+  line-height: 1;
   cursor: pointer;
-  box-shadow: 0 7px 0 var(--key-shadow);
+  box-shadow: 0 6px 0 var(--key-shadow);
 }
 
 .keypad button:active {
@@ -145,6 +152,7 @@
   place-items: center;
   background: var(--overlay-bg);
   z-index: 99;
+  padding: 20px;
 }
 
 .countdown-overlay.hidden {
@@ -152,15 +160,22 @@
 }
 
 .countdown-text {
-  width: 190px;
-  height: 180px;
+  width: clamp(170px, 46vw, 260px);
+  height: clamp(170px, 46vw, 260px);
+  max-width: 86vw;
+  max-height: 86vw;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: var(--white);
   color: var(--title-color);
-  font-size: 30px;
+  font-size: 40px;
   font-weight: 1000;
+  line-height: .9;
+  text-align: center;
+  padding: 18px;
+  overflow: hidden;
+  white-space: nowrap;
   box-shadow: 0 20px 60px var(--countdown-shadow);
   animation: countdownPop .45s ease both;
 }
@@ -180,4 +195,69 @@
 .keypad.locked {
   pointer-events: none;
   opacity: .45;
+}
+
+@media (max-height: 700px) {
+  .team-panel {
+    min-height: 98vh;
+    height: auto;
+    padding: 10px;
+  }
+
+  .team-panel h3 {
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+
+  .round-score {
+    width: 68px;
+    height: 68px;
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+
+  .question-box {
+    min-height: 52px;
+    font-size: 28px;
+  }
+
+  .answer-box {
+    min-height: 46px;
+    font-size: 28px;
+    margin: 6px 0;
+  }
+
+  .keypad {
+    gap: 7px;
+  }
+
+  .keypad button {
+    min-height: 42px;
+    font-size: 21px;
+  }
+
+  .countdown-text {
+    width: 190px;
+    height: 190px;
+    font-size: 64px;
+  }
+}
+
+@media (max-width: 360px) {
+  .team-panel {
+    width: 96vw;
+    height: 96vh;
+    padding: 10px;
+  }
+
+  .keypad button {
+    min-height: 42px;
+    font-size: 20px;
+  }
+
+  .countdown-text {
+    width: 170px;
+    height: 170px;
+    font-size: 54px;
+  }
 }

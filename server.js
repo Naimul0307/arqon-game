@@ -10,6 +10,14 @@ const io = new Server(server);
 
 const START_PORT = 3000;
 
+/*
+  Same as arena image limit.
+  Frontend image moves: diff * 25
+  Max movement: 150px
+  6 * 25 = 150px
+*/
+const WIN_PULL = 6;
+
 let ioRef = null;
 
 function getPublicDir() {
@@ -95,7 +103,7 @@ let gameState = {
   questions: { 1: null, 2: null },
   answers: { 1: "", 2: "" },
   seconds: 0,
-  maxScore: 10,
+  winPull: WIN_PULL,
   finished: false,
   started: false,
 };
@@ -128,7 +136,7 @@ function resetGame() {
     questions: { 1: null, 2: null },
     answers: { 1: "", 2: "" },
     seconds: 0,
-    maxScore: 10,
+    winPull: WIN_PULL,
     finished: false,
     started: false,
   };
@@ -170,6 +178,20 @@ function startCountdown() {
   }, 1000);
 }
 
+function finishGame(team) {
+  gameState.finished = true;
+  clearInterval(gameTimer);
+
+  io.emit("gameStateUpdated", gameState);
+
+  io.emit("gameFinished", {
+    winnerTeam: team,
+    winnerName: team === 1 ? teams.team1 : teams.team2,
+    score: gameState.scores[team],
+    seconds: gameState.seconds,
+  });
+}
+
 function submitAnswer(team) {
   if (!gameState.started || gameState.finished) return;
 
@@ -183,16 +205,16 @@ function submitAnswer(team) {
     io.emit("correctAnswer", team);
     io.emit("pullRope", team);
 
-    if (gameState.scores[team] >= gameState.maxScore) {
-      gameState.finished = true;
-      clearInterval(gameTimer);
+    const diff = gameState.scores[1] - gameState.scores[2];
 
-      io.emit("gameFinished", {
-        winnerTeam: team,
-        winnerName: team === 1 ? teams.team1 : teams.team2,
-        score: gameState.scores[team],
-        seconds: gameState.seconds,
-      });
+    if (diff >= WIN_PULL) {
+      finishGame(1);
+      return;
+    }
+
+    if (diff <= -WIN_PULL) {
+      finishGame(2);
+      return;
     }
   } else {
     gameState.answers[team] = "";
@@ -261,10 +283,6 @@ function start() {
         .listen(port, "0.0.0.0")
         .once("listening", () => {
           console.log(`✅ Running at http://${localIP}:${port}`);
-          console.log(`📺 Main: http://${localIP}:${port}/teams`);
-          console.log(`🔵 Team1: http://${localIP}:${port}/team1`);
-          console.log(`🔴 Team2: http://${localIP}:${port}/team2`);
-          console.log(`🎮 Game: http://${localIP}:${port}/game`);
 
           resolve({
             port,
@@ -274,7 +292,6 @@ function start() {
         })
         .once("error", (err) => {
           if (err.code === "EADDRINUSE") {
-            console.log(`⚠️ Port ${port} busy, trying ${port + 1}...`);
             tryPort(port + 1);
           } else {
             reject(err);
