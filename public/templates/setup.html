@@ -22,13 +22,43 @@
       <h1>TUG OF WAR: MATH GAME</h1>
       <h2 class="setup-title">SETUP GAME</h2>
 
+      <section class="setup-card settings-card">
+        <h3>Settings</h3>
+        <p id="wifiIpText">Loading WiFi IP...</p>
+
+        <div class="settings-row">
+          <label>Font Family</label>
+          <select id="fontFamilyBase"></select>
+        </div>
+
+        <div class="settings-row">
+          <label>Font Style</label>
+          <select id="fontStyleBase">
+            <option value="normal">Normal</option>
+            <option value="italic">Italic</option>
+          </select>
+        </div>
+
+        <div class="settings-row">
+          <label>Upload Font</label>
+          <input id="fontUploader" type="file" accept=".ttf,.otf,.woff,.woff2" multiple />
+        </div>
+
+        <div id="fontGrid" class="font-grid"></div>
+
+        <h3 style="margin-top: 28px;">Colors</h3>
+        <div id="colorPickersContainer" class="settings-grid"></div>
+
+        <button id="saveSettingsBtn" class="start" type="button">SAVE SETTINGS</button>
+      </section> 
+
       <section class="setup-card">
         <h3>Operations</h3>
         <p>Select one or more operations</p>
 
         <div class="operations">
           <label class="op-card selected">
-            <input type="checkbox" value="+" checked />
+            <input type="checkbox" value="+"/>
             <span>+</span>
             <small>Addition</small>
           </label>
@@ -60,41 +90,10 @@
           <button class="level" data-level="medium">Medium</button>
           <button class="level" data-level="hard">Hard</button>
         </div>
-      </section>
-
-      <section class="setup-card settings-card">
-        <h3>Settings</h3>
-        <p id="wifiIpText">Loading WiFi IP...</p>
-
-        <div class="settings-row">
-          <label>Font Family</label>
-          <select id="fontFamilyBase"></select>
-        </div>
-
-        <div class="settings-row">
-          <label>Font Style</label>
-          <select id="fontStyleBase">
-            <option value="normal">Normal</option>
-            <option value="italic">Italic</option>
-          </select>
-        </div>
-
-        <div class="settings-row">
-          <label>Upload Font</label>
-          <input id="fontUploader" type="file" accept=".ttf,.otf,.woff,.woff2" multiple />
-        </div>
-
-        <div id="fontGrid" class="font-grid"></div>
-
-        <h3 style="margin-top: 28px;">Colors</h3>
-        <div id="colorPickersContainer" class="settings-grid"></div>
-
-        <button id="saveSettingsBtn" class="start" type="button">SAVE SETTINGS</button>
-      </section>
-
       <div class="setup-actions">
-        <button id="nextBtn" class="start">NEXT</button>
+        <button id="nextBtn" class="start">Save & Next</button>
       </div>
+      </section>
     </section>
   </main>
 

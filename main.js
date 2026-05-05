@@ -9,8 +9,12 @@ app.setAppUserModelId("com.arqon.game");
 let mainWindow;
 let appServerUrl = "";
 
+const isDev = !app.isPackaged;
 const bundledPublicDir = path.join(__dirname, "public");
-const editablePublicDir = path.join(app.getPath("userData"), "public");
+
+const editablePublicDir = isDev
+  ? bundledPublicDir
+  : path.join(app.getPath("userData"), "public");
 
 const cssPath = path.join(editablePublicDir, "css", "base.css");
 const fontDir = path.join(editablePublicDir, "font");
@@ -21,18 +25,8 @@ function ensureDir(dirPath) {
   }
 }
 
-function copyPublicIfMissing() {
-  if (!fs.existsSync(editablePublicDir)) {
-    fs.cpSync(bundledPublicDir, editablePublicDir, { recursive: true });
-  }
-}
-
-function readCssVariables() {
-  if (!fs.existsSync(cssPath)) return {};
-
-  const css = fs.readFileSync(cssPath, "utf8");
+function extractRootVariables(css) {
   const rootMatch = css.match(/:root\s*{([\s\S]*?)}/);
-
   if (!rootMatch) return {};
 
   const vars = {};
@@ -44,6 +38,64 @@ function readCssVariables() {
   }
 
   return vars;
+}
+
+function mergeBaseCssKeepingUserSettings() {
+  const bundledBaseCss = path.join(bundledPublicDir, "css", "base.css");
+  const appDataBaseCss = path.join(editablePublicDir, "css", "base.css");
+
+  if (!fs.existsSync(bundledBaseCss)) return;
+
+  ensureDir(path.dirname(appDataBaseCss));
+
+  if (!fs.existsSync(appDataBaseCss)) {
+    fs.copyFileSync(bundledBaseCss, appDataBaseCss);
+    return;
+  }
+
+  const bundledCss = fs.readFileSync(bundledBaseCss, "utf8");
+  const savedCss = fs.readFileSync(appDataBaseCss, "utf8");
+  const savedVars = extractRootVariables(savedCss);
+
+  let mergedCss = bundledCss;
+
+  for (const [name, value] of Object.entries(savedVars)) {
+    const regex = new RegExp(`(${name}\\s*:\\s*)([^;]+)(;)`, "i");
+
+    if (regex.test(mergedCss)) {
+      mergedCss = mergedCss.replace(regex, `$1${value}$3`);
+    }
+  }
+
+  fs.writeFileSync(appDataBaseCss, mergedCss, "utf8");
+}
+
+function syncPublicToAppData() {
+  if (isDev) return;
+
+  ensureDir(editablePublicDir);
+
+  fs.cpSync(bundledPublicDir, editablePublicDir, {
+    recursive: true,
+    force: true,
+    filter: (src) => {
+      const relative = path.relative(bundledPublicDir, src);
+
+      if (!relative) return true;
+
+      if (relative.startsWith("font")) return false;
+      if (relative === path.join("css", "base.css")) return false;
+
+      return true;
+    },
+  });
+
+  mergeBaseCssKeepingUserSettings();
+}
+
+function readCssVariables() {
+  if (!fs.existsSync(cssPath)) return {};
+  return extractRootVariables(fs.readFileSync(cssPath, "utf8"));
 }
 
 function updateCssVariables(updatedVars) {
@@ -180,7 +232,7 @@ function createWindow(serverUrl) {
 }
 
 app.whenReady().then(async () => {
-  copyPublicIfMissing();
+  syncPublicToAppData();
 
   process.env.PUBLIC_DIR = editablePublicDir;
 
@@ -218,10 +270,7 @@ app.whenReady().then(async () => {
   ipcMain.handle("upload-font-file", (event, file) => {
     try {
       if (!file?.name || !file?.buffer) {
-        return {
-          success: false,
-          message: "No font selected",
-        };
+        return { success: false, message: "No font selected" };
       }
 
       const ext = path.extname(file.name).toLowerCase();

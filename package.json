@@ -43,7 +43,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Arqon Game"
+      "shortcutName": "Arqon Game",
+      "deleteAppDataOnUninstall": true
     }
   }
 }

@@ -5,10 +5,49 @@ const http = require("http");
 const { Server } = require("socket.io");
 
 const app = express();
+app.use(express.json());
 const server = http.createServer(app);
 const io = new Server(server);
+const fs = require("fs");
 
 const START_PORT = 3000;
+
+const DEFAULT_GAME_SETTINGS = {
+  operations: ["+"],
+  difficulty: "easy",
+};
+
+function getSettingsPath() {
+  return path.join(getPublicDir(), "json", "game-settings.json");
+}
+
+function readGameSettings() {
+  try {
+    const filePath = getSettingsPath();
+
+    if (!fs.existsSync(filePath)) {
+      writeGameSettings(DEFAULT_GAME_SETTINGS);
+      return DEFAULT_GAME_SETTINGS;
+    }
+
+    const data = JSON.parse(fs.readFileSync(filePath, "utf8"));
+
+    return {
+      operations: Array.isArray(data.operations) && data.operations.length
+        ? data.operations
+        : ["+"],
+      difficulty: data.difficulty || "easy",
+    };
+  } catch {
+    return DEFAULT_GAME_SETTINGS;
+  }
+}
+
+function writeGameSettings(settings) {
+  const filePath = getSettingsPath();
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(settings, null, 2), "utf8");
+}
 
 /*
   Same as arena image limit.
@@ -115,13 +154,67 @@ function rand(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function getNumberRange(difficulty) {
+  if (difficulty === "medium") return [5, 30];
+  if (difficulty === "hard") return [10, 99];
+  return [1, 10];
+}
+
 function newQuestion(team) {
-  const a = rand(1, 10);
-  const b = rand(1, 10);
+  const settings = readGameSettings();
+  const [min, max] = getNumberRange(settings.difficulty);
+
+  let operation =
+    settings.operations[rand(0, settings.operations.length - 1)];
+
+  const operationMap = {
+    add: "+",
+    plus: "+",
+    subtract: "-",
+    minus: "-",
+    multiply: "*",
+    multiplication: "*",
+    divide: "/",
+    division: "/",
+  };
+
+  operation = operationMap[operation] || operation;
+
+  let a = rand(min, max);
+  let b = rand(min, max);
+  let answer;
+  let symbol = operation;
+
+  if (operation === "+") {
+    answer = a + b;
+  } else if (operation === "-") {
+    if (b > a) {
+      const temp = a;
+      a = b;
+      b = temp;
+    }
+
+    answer = a - b;
+  } else if (operation === "*") {
+    const maxTable = settings.difficulty === "hard" ? 12 : 10;
+    a = rand(1, maxTable);
+    b = rand(1, maxTable);
+    answer = a * b;
+    symbol = "×";
+  } else if (operation === "/") {
+    const maxTable = settings.difficulty === "hard" ? 12 : 10;
+    b = rand(1, maxTable);
+    answer = rand(1, maxTable);
+    a = b * answer;
+    symbol = "÷";
+  } else {
+    answer = a + b;
+    symbol = "+";
+  }
 
   gameState.questions[team] = {
-    answer: a + b,
-    text: `${a} + ${b} = ?`,
+    answer,
+    text: `${a} ${symbol} ${b} = ?`,
   };
 
   gameState.answers[team] = "";
@@ -242,6 +335,29 @@ function handleKey(team, key) {
 
   io.emit("gameStateUpdated", gameState);
 }
+
+app.get("/api/game-settings", (req, res) => {
+  res.json({
+    success: true,
+    settings: readGameSettings(),
+  });
+});
+
+app.post("/api/game-settings", (req, res) => {
+  const settings = {
+    operations: Array.isArray(req.body.operations) && req.body.operations.length
+      ? req.body.operations
+      : ["+"],
+    difficulty: req.body.difficulty || "easy",
+  };
+
+  writeGameSettings(settings);
+
+  res.json({
+    success: true,
+    settings,
+  });
+});
 
 io.on("connection", (socket) => {
   ioRef = io;

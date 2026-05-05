@@ -52,20 +52,28 @@ $$(".level").forEach((button) => {
   });
 });
 
-$("#nextBtn")?.addEventListener("click", () => {
+$("#nextBtn")?.addEventListener("click", async () => {
   const operations = [...$$(".op-card input:checked")].map(
     (input) => input.value
   );
 
-  const difficulty = $(".level.active").dataset.level;
+  const difficulty = $(".level.active")?.dataset.level || "easy";
 
   if (!operations.length) {
     alert("Select at least one operation");
     return;
   }
 
-  localStorage.setItem("operations", JSON.stringify(operations));
-  localStorage.setItem("difficulty", difficulty);
+  await fetch("/api/game-settings", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      operations,
+      difficulty,
+    }),
+  });
 
   window.location.href = "/teams";
 });
