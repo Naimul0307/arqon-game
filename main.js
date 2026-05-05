@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, globalShortcut, shell } = require("electron");
+const { app, BrowserWindow, ipcMain, globalShortcut, shell, dialog } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
@@ -10,7 +10,9 @@ let mainWindow;
 let appServerUrl = "";
 
 const isDev = !app.isPackaged;
-const bundledPublicDir = path.join(__dirname, "public");
+const bundledPublicDir = isDev
+  ? path.join(__dirname, "public")
+  : path.join(process.resourcesPath, "public");
 
 const editablePublicDir = isDev
   ? bundledPublicDir
@@ -18,6 +20,13 @@ const editablePublicDir = isDev
 
 const cssPath = path.join(editablePublicDir, "css", "base.css");
 const fontDir = path.join(editablePublicDir, "font");
+
+function showStartupError(error) {
+  dialog.showErrorBox(
+    "Arqon Game startup error",
+    error?.stack || error?.message || String(error)
+  );
+}
 
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
@@ -83,7 +92,7 @@ function syncPublicToAppData() {
 
       if (!relative) return true;
 
-      if (relative.startsWith("font")) return false;
+      // keep user edited base.css
       if (relative === path.join("css", "base.css")) return false;
 
       return true;
@@ -343,6 +352,9 @@ app.whenReady().then(async () => {
     success: true,
     path: editablePublicDir,
   }));
+}).catch((error) => {
+  showStartupError(error);
+  app.quit();
 });
 
 app.on("window-all-closed", () => {

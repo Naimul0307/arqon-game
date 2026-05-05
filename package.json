@@ -31,8 +31,13 @@
       "main.js",
       "server.js",
       "preload.js",
-      "package.json",
-      "public/**/*"
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "public",
+        "to": "public"
+      }
     ],
     "win": {
       "target": "nsis",

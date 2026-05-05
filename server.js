@@ -55,7 +55,7 @@ function writeGameSettings(settings) {
   Max movement: 150px
   6 * 25 = 150px
 */
-const WIN_PULL = 6;
+const WIN_PULL = 7;
 
 let ioRef = null;
 
@@ -395,8 +395,10 @@ io.on("connection", (socket) => {
 function start() {
   return new Promise((resolve, reject) => {
     function tryPort(port) {
+      server.removeAllListeners("error");
+      server.removeAllListeners("listening");
+
       server
-        .listen(port, "0.0.0.0")
         .once("listening", () => {
           console.log(`✅ Running at http://${localIP}:${port}`);
 
@@ -408,11 +410,14 @@ function start() {
         })
         .once("error", (err) => {
           if (err.code === "EADDRINUSE") {
-            tryPort(port + 1);
+            server.close(() => {
+              tryPort(port + 1);
+            });
           } else {
             reject(err);
           }
-        });
+        })
+        .listen(port, "0.0.0.0");
     }
 
     tryPort(START_PORT);

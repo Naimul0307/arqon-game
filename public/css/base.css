@@ -129,6 +129,45 @@
   --red-player: #b81731;
   --legs-color: #29324c;
 
+  /* Game main color variables */
+  --game-arena-sky: #bfe7ff;
+  --game-arena-grass: #74bd59;
+  --game-ground-stripe: rgba(255,255,255,.12);
+  --game-rope-dark: #6d3b19;
+  --game-rope-mid: #b97835;
+  --game-rope-light: #e2a15a;
+  --game-rope-inset-shadow: rgba(0,0,0,.22);
+  --game-rope-drop-shadow: rgba(0,0,0,.24);
+  --game-rope-center-top: #fff2a0;
+  --game-rope-center-bottom: #d98b13;
+  --game-player-shadow: rgba(0,0,0,.26);
+  --game-skin-light: #ffd0a8;
+  --game-skin-mid: #d28a5a;
+  --game-skin-dark: #9c5632;
+  --game-head-inset-shadow: rgba(72,32,10,.25);
+  --game-body-shadow: rgba(0,0,0,.2);
+  --game-hair-light: #3a241c;
+  --game-hair-dark: #17100d;
+  --game-face-dark: #24130e;
+  --game-mouth-shadow: rgba(95,37,25,.55);
+  --game-highlight-strong: rgba(255,255,255,.5);
+  --game-highlight-soft: rgba(255,255,255,.18);
+  --game-torso-shine: rgba(255,255,255,.38);
+  --game-highlight-red: rgba(255,255,255,.48);
+  --game-arm-highlight: rgba(255,255,255,.35);
+  --game-arm-light: #efb88d;
+  --game-arm-dark: #b86f45;
+  --game-arm-shadow: rgba(0,0,0,.16);
+  --game-hand-light: #d58b5e;
+  --game-hand-dark: #9f5735;
+  --game-hand-highlight: rgba(255,255,255,.28);
+  --game-hand-dark-alt: #9b5230;
+  --game-leg-top: #324160;
+  --game-leg-bottom: #111827;
+  --game-leg-shadow: rgba(0,0,0,.14);
+  --game-shoe-top: #182033;
+  --game-shoe-bottom: #090d16;
+
   --blue-card-light: #53acff;
   --red-card-light: #ff6b7a;
   --button-blue-light: #48A1FF;

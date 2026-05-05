@@ -51,22 +51,10 @@
   margin: 26px 0;
   border-radius: 34px;
   background:
-    radial-gradient(circle at 50% 18%, rgba(255,255,255,.65), transparent 18%),
-    linear-gradient(180deg, #bfe7ff 0 55%, #74bd59 55% 100%);
+    radial-gradient(circle at 50% 18%, var(--panel-border-light), transparent 18%),
+    linear-gradient(180deg, var(--game-arena-sky) 0 55%, var(--game-arena-grass) 55% 100%);
   overflow: hidden;
   border: 6px solid var(--white);
-}
-
-.ground::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-linear-gradient(
-      -8deg,
-      rgba(255,255,255,.12) 0 2px,
-      transparent 2px 34px
-    );
 }
 
 .ground {
@@ -76,6 +64,18 @@
   width: 110%;
   height: 42%;
   background: linear-gradient(180deg, var(--ground-top), var(--ground-bottom));
+}
+
+.ground::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      -8deg,
+      var(--game-ground-stripe) 0 2px,
+      transparent 2px 34px
+    );
 }
 
 .goal {
@@ -99,7 +99,9 @@
 }
 
 @keyframes flagWave {
-  50% { transform: rotate(-7deg) translateY(-3px); }
+  50% {
+    transform: rotate(-7deg) translateY(-3px);
+  }
 }
 
 .rope-wrap {
@@ -122,18 +124,20 @@
   background:
     repeating-linear-gradient(
       45deg,
-      #6d3b19 0 8px,
-      #b97835 8px 16px,
-      #e2a15a 16px 24px
+      var(--game-rope-dark) 0 8px,
+      var(--game-rope-mid) 8px 16px,
+      var(--game-rope-light) 16px 24px
     );
   box-shadow:
-    inset 0 -5px 6px rgba(0,0,0,.22),
-    0 10px 18px rgba(0,0,0,.24);
+    inset 0 -5px 6px var(--game-rope-inset-shadow),
+    0 10px 18px var(--game-rope-drop-shadow);
   animation: ropeWiggle .55s ease-in-out infinite;
 }
 
 @keyframes ropeWiggle {
-  50% { transform: translateY(-2px); }
+  50% {
+    transform: translateY(-2px);
+  }
 }
 
 .rope-center {
@@ -143,19 +147,20 @@
   width: 42px;
   height: 62px;
   border-radius: 14px 14px 22px 22px;
-  background:
-    linear-gradient(180deg, #fff2a0, #d98b13);
+  background: linear-gradient(180deg, var(--game-rope-center-top), var(--game-rope-center-bottom));
   border: 4px solid var(--white);
-  box-shadow: 0 12px 24px rgba(0,0,0,.24);
+  box-shadow: 0 12px 24px var(--game-rope-drop-shadow);
   transform: translateX(-50%);
   transition: left .42s cubic-bezier(.2,1.4,.35,1);
 }
 
 .player {
   position: absolute;
-  top: calc(52% - 118px);
-  width: 120px;
-  height: 190px;
+  top: calc(52% - 132px);
+  width: 140px;
+  height: 210px;
+  perspective: 700px;
+  transform-style: preserve-3d;
   transition:
     left .42s cubic-bezier(.2,1.4,.35,1),
     right .42s cubic-bezier(.2,1.4,.35,1);
@@ -164,174 +169,214 @@
 
 .player-left {
   left: 12%;
+  transform: rotateY(-14deg) rotateZ(-5deg);
 }
 
 .player-right {
   right: 12%;
-  transform: scaleX(-1);
+  transform: scaleX(-1) rotateY(-14deg) rotateZ(-5deg);
 }
 
 .player::after {
   content: "";
   position: absolute;
-  left: 18px;
-  bottom: -8px;
-  width: 88px;
-  height: 18px;
+  left: 22px;
+  bottom: -10px;
+  width: 96px;
+  height: 24px;
   border-radius: 50%;
-  background: rgba(0,0,0,.22);
-  filter: blur(3px);
+  background: var(--game-player-shadow);
+  filter: blur(5px);
   z-index: -1;
 }
 
 .head {
   position: absolute;
   top: 0;
-  left: 34px;
-  width: 52px;
-  height: 58px;
-  border-radius: 50% 50% 46% 46%;
+  left: 42px;
+  width: 56px;
+  height: 62px;
+  border-radius: 48% 48% 44% 44%;
   background:
-    radial-gradient(circle at 35% 28%, rgba(255,255,255,.35), transparent 18%),
-    linear-gradient(145deg, #f6c9a3, #b86f45);
+    radial-gradient(circle at 32% 26%, var(--panel-border), transparent 18%),
+    linear-gradient(135deg, var(--game-skin-light) 0%, var(--game-skin-mid) 58%, var(--game-skin-dark) 100%);
   box-shadow:
-    inset -8px -8px 12px rgba(0,0,0,.14),
-    0 8px 14px rgba(0,0,0,.16);
+    inset -12px -10px 16px var(--game-head-inset-shadow),
+    inset 7px 5px 10px var(--panel-glass),
+    0 12px 18px var(--game-body-shadow);
+  z-index: 7;
 }
 
 .head::before {
   content: "";
   position: absolute;
-  top: 4px;
-  left: 5px;
-  width: 42px;
-  height: 16px;
-  border-radius: 18px 18px 8px 8px;
-  background: #2b1d18;
+  top: 2px;
+  left: 4px;
+  width: 48px;
+  height: 20px;
+  border-radius: 22px 22px 8px 8px;
+  background: linear-gradient(135deg, var(--game-hair-light), var(--game-hair-dark));
 }
 
 .head::after {
   content: "";
   position: absolute;
-  top: 28px;
-  left: 36px;
+  top: 30px;
+  left: 38px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #2b1d18;
-  box-shadow: -20px 0 0 #2b1d18;
+  background: var(--game-face-dark);
+  box-shadow:
+    -20px 0 0 var(--game-face-dark),
+    -10px 14px 0 -2px var(--game-mouth-shadow);
+}
+
+.torso {
+  position: absolute;
+  top: 58px;
+  left: 34px;
+  width: 72px;
+  height: 88px;
+  border-radius: 28px 28px 20px 20px;
+  background:
+    radial-gradient(circle at 28% 18%, var(--game-highlight-strong), transparent 18%),
+    linear-gradient(145deg, var(--blue-light), var(--blue), var(--blue-dark));
+  box-shadow:
+    inset -14px -16px 22px var(--game-rope-inset-shadow),
+    inset 9px 7px 12px var(--game-highlight-soft),
+    0 16px 24px var(--game-body-shadow);
+  transform: skewX(-5deg);
+  z-index: 5;
 }
 
 .torso::before {
   content: "";
   position: absolute;
-  inset: 8px 10px auto;
-  height: 10px;
+  top: 13px;
+  left: 12px;
+  width: 48px;
+  height: 12px;
   border-radius: 99px;
-  background: rgba(255,255,255,.35);
+  background: var(--game-torso-shine);
 }
 
-.torso {
+.torso::after {
+  content: "";
   position: absolute;
-  top: 56px;
-  left: 30px;
-  width: 62px;
-  height: 76px;
-  border-radius: 24px 24px 18px 18px;
-  background: linear-gradient(145deg, var(--blue-light), var(--blue-dark));
-  box-shadow:
-    inset -10px -12px 18px rgba(0,0,0,.18),
-    0 12px 20px rgba(0,0,0,.16);
+  right: 9px;
+  top: 18px;
+  width: 14px;
+  height: 58px;
+  border-radius: 99px;
+  background: var(--button-shadow-soft);
 }
 
 .player-right .torso {
-  background: linear-gradient(145deg, var(--red-light), var(--red-dark));
+  background:
+    radial-gradient(circle at 28% 18%, var(--game-highlight-red), transparent 18%),
+    linear-gradient(145deg, var(--red-light), var(--red), var(--red-dark));
 }
 
 .arm {
   position: absolute;
-  width: 22px;
-  height: 72px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, #f0b98e, #b9744d);
+  width: 24px;
+  height: 80px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 35% 18%, var(--game-arm-highlight), transparent 20%),
+    linear-gradient(180deg, var(--game-arm-light), var(--game-arm-dark));
+  box-shadow:
+    inset -8px -8px 12px var(--game-body-shadow),
+    0 8px 12px var(--game-arm-shadow);
   transform-origin: top center;
-  z-index: 4;
 }
 
 .arm-front {
   top: 82px;
-  left: 78px;
+  left: 90px;
   transform: rotate(-76deg);
+  z-index: 8;
 }
 
 .arm-front::before {
   content: "";
   position: absolute;
-  bottom: -18px;
-  left: -1px;
-  width: 26px;
-  height: 34px;
-  border-radius: 16px;
-  background: #b9744d;
+  bottom: -20px;
+  left: -2px;
+  width: 28px;
+  height: 38px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--game-hand-light), var(--game-hand-dark));
   transform: rotate(72deg);
+  box-shadow: inset -6px -6px 10px var(--game-body-shadow);
 }
 
 .arm-back {
-  top: 70px;
-  left: 22px;
-  transform: rotate(38deg);
-  opacity: .85;
-  z-index: 1;
+  top: 76px;
+  left: 24px;
+  transform: rotate(45deg);
+  opacity: .92;
+  z-index: 2;
 }
 
 .arm::after {
   content: "";
   position: absolute;
-  bottom: -8px;
-  left: -3px;
-  width: 28px;
-  height: 22px;
+  bottom: -9px;
+  left: -4px;
+  width: 31px;
+  height: 24px;
   border-radius: 50%;
-  background: #c98255;
+  background:
+    radial-gradient(circle at 35% 28%, var(--game-hand-highlight), transparent 20%),
+    linear-gradient(145deg, var(--game-hand-light), var(--game-hand-dark-alt));
 }
 
 .leg {
   position: absolute;
-  top: 126px;
-  width: 24px;
-  height: 68px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #273552, #111827);
+  top: 138px;
+  width: 27px;
+  height: 76px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, var(--game-leg-top), var(--game-leg-bottom) 82%);
+  box-shadow:
+    inset -8px -8px 12px var(--game-player-shadow),
+    0 8px 12px var(--game-leg-shadow);
   transform-origin: top center;
+  z-index: 3;
 }
 
 .leg-front {
-  left: 62px;
-  transform: rotate(-14deg);
+  left: 72px;
+  transform: rotate(-19deg);
 }
 
 .leg-back {
-  left: 34px;
-  transform: rotate(18deg);
+  left: 40px;
+  transform: rotate(22deg);
   opacity: .9;
 }
 
 .leg::after {
   content: "";
   position: absolute;
-  bottom: -8px;
-  width: 36px;
-  height: 16px;
-  border-radius: 14px;
-  background: #0d1320;
+  bottom: -10px;
+  width: 42px;
+  height: 18px;
+  border-radius: 14px 18px 18px 8px;
+  background: linear-gradient(180deg, var(--game-shoe-top), var(--game-shoe-bottom));
+  box-shadow: 0 6px 10px var(--game-rope-inset-shadow);
 }
 
 .leg-front::after {
-  left: -2px;
+  left: -3px;
+  transform: rotate(5deg);
 }
 
 .leg-back::after {
-  right: -2px;
+  right: -5px;
+  transform: rotate(-5deg);
 }
 
 .pull-left .player-left {
@@ -344,13 +389,13 @@
 
 @keyframes hardPullLeft {
   50% {
-    transform: translateX(-10px) rotate(-3deg) scale(1.05);
+    transform: rotateY(-14deg) rotateZ(-9deg) translateX(-12px) scale(1.06);
   }
 }
 
 @keyframes hardPullRight {
   50% {
-    transform: scaleX(-1) translateX(-10px) rotate(-3deg) scale(1.05);
+    transform: scaleX(-1) rotateY(-14deg) rotateZ(-9deg) translateX(-12px) scale(1.06);
   }
 }
 
@@ -387,8 +432,15 @@
 }
 
 @keyframes winPop {
-  from { opacity: 0; transform: scale(.78) rotate(-3deg); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(.78) rotate(-3deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .trophy {
