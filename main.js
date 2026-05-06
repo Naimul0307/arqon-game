@@ -95,6 +95,9 @@ function syncPublicToAppData() {
       // keep user edited base.css
       if (relative === path.join("css", "base.css")) return false;
 
+      // keep saved game settings
+      if (relative === path.join("json", "game-settings.json")) return false;
+
       return true;
     },
   });

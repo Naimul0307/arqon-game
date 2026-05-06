@@ -339,10 +339,36 @@ window.electron?.on("reload-styles", () => {
   });
 });
 
+async function loadGameSettings() {
+  try {
+    const res = await fetch("/api/game-settings");
+    const data = await res.json();
+    const settings = data.settings || {};
+
+    $$(".op-card input").forEach((input) => {
+      input.checked = Array.isArray(settings.operations)
+        ? settings.operations.includes(input.value)
+        : input.value === "+";
+
+      input.closest(".op-card")?.classList.toggle("selected", input.checked);
+    });
+
+    $$(".level").forEach((button) => {
+      button.classList.toggle(
+        "active",
+        button.dataset.level === (settings.difficulty || "easy")
+      );
+    });
+  } catch (err) {
+    console.error("Failed to load game settings", err);
+  }
+}
+
 /* ---------------- INIT ---------------- */
 
 (async function init() {
   await loadFonts();
   await loadVariables();
   await loadServerInfo();
+  await loadGameSettings();
 })();
