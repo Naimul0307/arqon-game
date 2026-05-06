@@ -103,7 +103,7 @@ socket.on("gameFinished", () => {
 
   setTimeout(() => {
     window.location.href = team === 1 ? "/team1" : "/team2";
-  }, 5000);
+  }, 10000);
 });
 
 socket.on("restartSetup", () => {

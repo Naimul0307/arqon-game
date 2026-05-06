@@ -62,7 +62,7 @@ socket.on("gameFinished", (data) => {
 
   setTimeout(() => {
     socket.emit("playAgain");
-  }, 5000);
+  }, 10000);
 });
 
 $("#playAgainBtn").addEventListener("click", () => {

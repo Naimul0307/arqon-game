@@ -10,9 +10,11 @@ let mainWindow;
 let appServerUrl = "";
 
 const isDev = !app.isPackaged;
-const bundledPublicDir = isDev
-  ? path.join(__dirname, "public")
-  : path.join(process.resourcesPath, "public");
+// const bundledPublicDir = isDev
+//   ? path.join(__dirname, "public")
+//   : path.join(process.resourcesPath, "public");
+
+const bundledPublicDir = path.join(__dirname, "public");
 
 const editablePublicDir = isDev
   ? bundledPublicDir
@@ -79,28 +81,39 @@ function mergeBaseCssKeepingUserSettings() {
   fs.writeFileSync(appDataBaseCss, mergedCss, "utf8");
 }
 
+function copyDirSafe(srcDir, destDir) {
+  ensureDir(destDir);
+
+  for (const item of fs.readdirSync(srcDir)) {
+    const srcPath = path.join(srcDir, item);
+    const destPath = path.join(destDir, item);
+
+    const relative = path.relative(bundledPublicDir, srcPath);
+
+    if (relative === path.join("css", "base.css")) continue;
+    if (relative === path.join("json", "game-settings.json")) continue;
+
+    const stat = fs.statSync(srcPath);
+
+    if (stat.isDirectory()) {
+      copyDirSafe(srcPath, destPath);
+    } else {
+      ensureDir(path.dirname(destPath));
+      fs.copyFileSync(srcPath, destPath);
+    }
+  }
+}
+
+
 function syncPublicToAppData() {
   if (isDev) return;
 
+  if (!fs.existsSync(bundledPublicDir)) {
+    throw new Error(`public not found: ${bundledPublicDir}`);
+  }
+
   ensureDir(editablePublicDir);
-
-  fs.cpSync(bundledPublicDir, editablePublicDir, {
-    recursive: true,
-    force: true,
-    filter: (src) => {
-      const relative = path.relative(bundledPublicDir, src);
-
-      if (!relative) return true;
-
-      // keep user edited base.css
-      if (relative === path.join("css", "base.css")) return false;
-
-      // keep saved game settings
-      if (relative === path.join("json", "game-settings.json")) return false;
-
-      return true;
-    },
-  });
+  copyDirSafe(bundledPublicDir, editablePublicDir);
 
   mergeBaseCssKeepingUserSettings();
 }
